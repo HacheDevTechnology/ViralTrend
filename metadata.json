@@ -1,0 +1,6 @@
+{
+  "name": "Generador de Estados Virales & Buscador de Tendencias",
+  "description": "Genera publicaciones y estados altamente viralizables adaptados a tendencias en tiempo real para Twitter, Instagram, TikTok, LinkedIn, WhatsApp y Threads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

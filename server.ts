@@ -390,13 +390,26 @@ Responde estrictamente en formato JSON válido según el siguiente esquema:
         .filter((c: any) => c.web?.uri)
         .map((c: any) => ({ title: c.web.title || "Fuente", url: c.web.uri }));
     } catch (primaryErr: any) {
-      console.warn("Primary search with tools failed or rate limited, trying secondary model...", primaryErr?.message || primaryErr);
-      // Secondary attempt: gemini-2.5-flash without tools
-      const response2 = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-      });
-      responseText = response2.text || "";
+      const errMsg = String(primaryErr?.message || primaryErr || "");
+      const isQuota = errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("quota");
+      
+      if (isQuota) {
+        console.log("Gemini API quota reached. Serving instant response via smart offline engine.");
+        const offlineList = generateOfflineTrends(query, category);
+        return res.json({ trends: offlineList, source: "smart_offline_engine" });
+      }
+
+      console.log("Primary search tool unavailable, falling back to secondary model...");
+      try {
+        const response2 = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: prompt,
+        });
+        responseText = response2.text || "";
+      } catch (secondaryErr) {
+        const offlineList = generateOfflineTrends(query, category);
+        return res.json({ trends: offlineList, source: "smart_offline_engine" });
+      }
     }
 
     let parsedTrends: any[] = [];
@@ -406,7 +419,7 @@ Responde estrictamente en formato JSON válido según el siguiente esquema:
         parsedTrends = JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.warn("Could not parse JSON output from trends API");
+      // Silent parse fallback
     }
 
     if (!parsedTrends || parsedTrends.length === 0) {
@@ -421,7 +434,7 @@ Responde estrictamente en formato JSON válido según el siguiente esquema:
 
     return res.json({ trends: enrichedTrends, source: groundedSources.length > 0 ? "gemini_grounded_search" : "gemini_model_search" });
   } catch (error: any) {
-    console.warn("Gemini API error or quota limit on search, using smart offline trends engine:", error?.message || error);
+    console.log("Serving smart offline trends fallback.");
     const offlineList = generateOfflineTrends(query, category);
     return res.json({ trends: offlineList, source: "smart_offline_engine" });
   }
@@ -529,21 +542,33 @@ Debes responder ÚNICAMENTE en formato JSON estricto con el siguiente esquema:
       });
       jsonText = response.text || "";
     } catch (primaryErr: any) {
-      console.warn("Primary generate model failed or rate limited, trying secondary model...", primaryErr?.message || primaryErr);
-      const response2 = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-        }
-      });
-      jsonText = response2.text || "";
+      const errMsg = String(primaryErr?.message || primaryErr || "");
+      const isQuota = errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("quota");
+
+      if (isQuota) {
+        console.log("Gemini API quota reached. Serving instant viral options via smart offline engine.");
+        return res.json(generateOfflineViralOptions(body));
+      }
+
+      console.log("Primary model unavailable, falling back to secondary model...");
+      try {
+        const response2 = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+          }
+        });
+        jsonText = response2.text || "";
+      } catch (secondaryErr) {
+        return res.json(generateOfflineViralOptions(body));
+      }
     }
 
     const data = JSON.parse(jsonText);
     return res.json(data);
   } catch (error: any) {
-    console.warn("Gemini API error or rate limit on viral generate, using smart offline generator:", error?.message || error);
+    console.log("Serving smart offline viral options fallback.");
     return res.json(generateOfflineViralOptions(body));
   }
 });
@@ -607,21 +632,33 @@ Responde strictly en formato JSON con la siguiente estructura:
       });
       jsonText = response.text || "";
     } catch (primaryErr: any) {
-      console.warn("Primary analyze model failed or rate limited, trying secondary model...", primaryErr?.message || primaryErr);
-      const response2 = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-        }
-      });
-      jsonText = response2.text || "";
+      const errMsg = String(primaryErr?.message || primaryErr || "");
+      const isQuota = errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("quota");
+
+      if (isQuota) {
+        console.log("Gemini API quota reached. Serving instant analysis via smart offline engine.");
+        return res.json(generateOfflineAnalysis(text, platform));
+      }
+
+      console.log("Primary model unavailable, falling back to secondary model...");
+      try {
+        const response2 = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+          }
+        });
+        jsonText = response2.text || "";
+      } catch (secondaryErr) {
+        return res.json(generateOfflineAnalysis(text, platform));
+      }
     }
 
     const data = JSON.parse(jsonText);
     return res.json(data);
   } catch (error: any) {
-    console.warn("Gemini API error or rate limit on viral analyze, using smart offline analyzer:", error?.message || error);
+    console.log("Serving smart offline analyzer fallback.");
     return res.json(generateOfflineAnalysis(text, platform));
   }
 });

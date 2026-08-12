@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Copy, Check, Bookmark, RefreshCw, Send, SlidersHorizontal, Twitter, Instagram, Linkedin, MessageSquare, Flame, Wand2, Image, Layers, Share2, AlertCircle, Volume2 } from 'lucide-react';
 import { Platform, Tone, RegionalStyle, TrendItem, GeneratedStatusOption, GenerateStatusRequest, GenerateStatusResponse, SavedStatusItem } from '../types';
 
+import { getClientFallbackViralOptions } from '../data/fallbackGenerator';
+
 interface ViralGeneratorProps {
   initialTrend?: TrendItem | null;
   onClearTrend?: () => void;
@@ -116,15 +118,15 @@ export const ViralGenerator: React.FC<ViralGeneratorProps> = ({
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Error en el servidor al generar estados.');
+        throw new Error(`Server status ${response.status}`);
       }
 
       const data: GenerateStatusResponse = await response.json();
       setResults(data);
     } catch (err: any) {
-      console.error(err);
-      setErrorMsg(err.message || 'Ocurrió un error al conectar con el servidor.');
+      console.warn('Network or server error during generation, using offline smart engine:', err);
+      const fallbackData = getClientFallbackViralOptions(payload);
+      setResults(fallbackData);
     } finally {
       setLoading(false);
     }

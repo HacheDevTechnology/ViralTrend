@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Search, Flame, Sparkles, TrendingUp, ExternalLink, ArrowRight, RefreshCw, Zap, Compass, CheckCircle2 } from 'lucide-react';
 import { TrendItem, Category } from '../types';
 
+import { getClientFallbackTrends } from '../data/fallbackTrends';
+
 interface TrendSearchProps {
   onSelectTrendForGeneration: (trend: TrendItem) => void;
 }
@@ -34,13 +36,23 @@ export const TrendSearch: React.FC<TrendSearchProps> = ({ onSelectTrendForGenera
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category: cat, query }),
       });
+      if (!response.ok) {
+        throw new Error(`Server returned ${response.status}`);
+      }
       const data = await response.json();
-      if (data.trends && Array.isArray(data.trends)) {
+      if (data && data.trends && Array.isArray(data.trends) && data.trends.length > 0) {
         setTrends(data.trends);
         setDataSource(data.source || 'gemini');
+      } else {
+        const fallbacks = getClientFallbackTrends(cat, query);
+        setTrends(fallbacks);
+        setDataSource('smart_offline_engine');
       }
     } catch (error) {
-      console.error('Error loading trends:', error);
+      console.warn('Network or API response issue, using client offline trends engine:', error);
+      const fallbacks = getClientFallbackTrends(cat, query);
+      setTrends(fallbacks);
+      setDataSource('smart_offline_engine');
     } finally {
       setLoading(false);
     }

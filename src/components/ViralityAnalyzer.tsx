@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { BarChart2, Sparkles, CheckCircle2, AlertTriangle, Flame, Copy, Check, ArrowRight, Zap, RefreshCw, Send } from 'lucide-react';
 import { ViralityAnalysisResponse, Platform } from '../types';
 
+import { getClientFallbackAnalysis } from '../data/fallbackGenerator';
+
 interface ViralityAnalyzerProps {
   onUseImprovedText: (text: string) => void;
 }
@@ -24,10 +26,15 @@ export const ViralityAnalyzer: React.FC<ViralityAnalyzerProps> = ({ onUseImprove
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: inputText, platform }),
       });
+      if (!response.ok) {
+        throw new Error(`Server returned status ${response.status}`);
+      }
       const data = await response.json();
       setAnalysis(data);
     } catch (error) {
-      console.error('Error analyzing post:', error);
+      console.warn('Error analyzing post, using offline analyzer:', error);
+      const fallbackAnalysis = getClientFallbackAnalysis(inputText, platform);
+      setAnalysis(fallbackAnalysis);
     } finally {
       setLoading(false);
     }

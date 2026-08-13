@@ -4,6 +4,8 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 
+import { validatePremiumKey, generatePremiumKey } from "./src/lib/keyAuth";
+
 dotenv.config();
 
 const app = express();
@@ -336,6 +338,24 @@ function generateOfflineAnalysis(text: string, platform: string = "twitter") {
 // Health Check API
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "Generador de Estados Virales & Trends" });
+});
+
+// Key Validation Endpoint
+app.post("/api/keys/verify", (req, res) => {
+  const { key } = req.body;
+  const result = validatePremiumKey(key);
+  if (result.isValid) {
+    return res.json({ success: true, message: "¡Clave Premium activada con éxito!", key: key.trim().toUpperCase() });
+  } else {
+    return res.status(400).json({ success: false, message: result.reason || "Clave de acceso no válida." });
+  }
+});
+
+// Key Generation Endpoint (Generates a secure key dynamically)
+app.post("/api/keys/generate", (req, res) => {
+  const { tag = "VIP1", seed } = req.body || {};
+  const newKey = generatePremiumKey(tag, seed);
+  return res.json({ success: true, key: newKey, generatedAt: new Date().toISOString() });
 });
 
 // Search Trends API (using Gemini Grounded Google Search)

@@ -39,10 +39,10 @@ export const VisualCardGenerator: React.FC<VisualCardGeneratorProps> = ({
           </div>
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Creador de Tarjetas Visuales para Redes
+              Crea tarjetas de imagen atractivas
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              Convierte cualquier estado en una tarjeta o captura de pantalla estética ideal para publicar en Instagram Stories, WhatsApp Status o Twitter.
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
+              Convierte cualquier texto en una imagen estética lista para tus historias de Instagram, WhatsApp o Twitter.
             </p>
           </div>
         </div>

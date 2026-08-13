@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bookmark, Copy, Check, Trash2, Download, Search, Sparkles, Share2, Flame } from 'lucide-react';
 import { SavedStatusItem } from '../types';
+import { shareToSocial, SOCIAL_SHARE_OPTIONS } from '../lib/socialShare';
 
 interface SavedLibraryProps {
   savedStatuses: SavedStatusItem[];
@@ -57,10 +58,10 @@ export const SavedLibrary: React.FC<SavedLibraryProps> = ({
           </div>
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Colección de Estados Guardados ({savedStatuses.length})
+              Tus publicaciones guardadas ({savedStatuses.length})
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              Tus copys virales guardados listos para programar o reutilizar en tus redes sociales.
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
+              Aquí tienes guardadas todas las ideas y copys listos para usar o publicar en cualquier momento.
             </p>
           </div>
         </div>
@@ -144,6 +145,26 @@ export const SavedLibrary: React.FC<SavedLibraryProps> = ({
                     ))}
                   </div>
                 )}
+
+                {/* Social Share Buttons */}
+                <div className="space-y-1 pt-1">
+                  <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">
+                    Publicar Directamente a Red Social:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {SOCIAL_SHARE_OPTIONS.map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={() => shareToSocial(s.id, item.content)}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition flex items-center gap-1 ${s.color}`}
+                        title={`Abrir ventana de publicación en ${s.label}`}
+                      >
+                        <span>{s.icon}</span>
+                        <span>{s.label.split(' ')[0]}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className="pt-3 border-t border-slate-800 flex items-center justify-between">

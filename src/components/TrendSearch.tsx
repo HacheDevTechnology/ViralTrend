@@ -82,18 +82,18 @@ export const TrendSearch: React.FC<TrendSearchProps> = ({ onSelectTrendForGenera
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold">
             <Compass className="w-4 h-4 text-amber-400" />
-            <span>Explorador de Tendencias Virales en Tiempo Real</span>
+            <span>Ideas Frescas & Tendencias Populares</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
-            Descubre de qué está hablando el mundo <br className="hidden sm:inline" />
+            Encuentra de qué hablar hoy <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-300 to-purple-400">
-              y adáptalo a tus estados en segundos
+              y ahorra horas pensando temas
             </span>
           </h2>
 
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            Nuestra IA analiza búsquedas en tiempo real, conversaciones virales y patrones de alto engagement para darte los mejores ángulos de publicación para Twitter, Instagram, TikTok y LinkedIn.
+            Me encargo de rastrear los temas más comentados para ofrecerte ideas atractivas que puedes convertir en publicaciones con un solo clic.
           </p>
 
           {/* Search Form */}

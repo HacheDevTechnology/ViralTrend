@@ -3,6 +3,8 @@ import { GenerateStatusResponse, ViralityAnalysisResponse } from '../types';
 export function getClientFallbackViralOptions(body: any): GenerateStatusResponse {
   const {
     topic = "crecimiento personal y tecnología",
+    contentTypeCategory = "social_post",
+    detectedLanguage = "Español",
     regionalStyle = "general",
     includeHashtags = true,
     emojiDensity = "medium",
@@ -26,6 +28,66 @@ export function getClientFallbackViralOptions(body: any): GenerateStatusResponse
     ? [`#${topicClean.replace(/\s+/g, '')}`, "#ViralPost", "#EstrategiaDigital", "#Tendencias2026"]
     : [];
 
+  // Customize output options based on Content Type Category
+  if (contentTypeCategory === 'reels_shorts') {
+    return {
+      options: [
+        {
+          id: `opt-reel-1-${Date.now()}`,
+          headline: "🎬 Guion de Video Corto: Gancho Visual (0-3s)",
+          content: `[GANCHO VISUAL 0-3s]: Señala a la cámara con expresión de sorpresa o muestra la pantalla.\n"Si sigues cometiendo este error con ${topicClean}, estás regalando tu tiempo."\n\n[DESARROLLO 4-20s]: Muestra 3 cortes rápidos de texto e imágenes sobre el tema.\n1. Punto clave A: Simplifica el proceso.\n2. Punto clave B: Usa herramientas automatizadas.\n\n[LLAMADA A LA ACCIÓN 21-30s]: "Comenta 'VIRAL' abajo y te envío la guía completa por DM."`,
+          formattingType: "script",
+          hashtags: hashtagsList,
+          emojisCount: 3,
+          viralityScore: 98,
+          viralityReasoning: "Estructura optimizada para la retención en los primeros 3 segundos de TikTok/Reels/Shorts.",
+          callToAction: "Comenta 'VIRAL' abajo y te envío la guía completa por DM.",
+          suggestedBestTime: "18:00 - 21:00"
+        },
+        {
+          id: `opt-reel-2-${Date.now()}`,
+          headline: "🔥 Guion Controversial / Mito vs Realidad",
+          content: `[GANCHO 0-3s]: "Todo lo que te dijeron sobre ${topicClean} es mentira. Aquí está la verdad:"\n\n[CUERPO 4-25s]:\n❌ Mito: Se requiere años de experiencia.\n✅ Realidad: Con la estrategia correcta tardas 15 minutos.\n\n[OUTRO]: "Guarda este Reel antes de que lo borre."`,
+          formattingType: "script",
+          hashtags: hashtagsList,
+          emojisCount: 4,
+          viralityScore: 95,
+          viralityReasoning: "Contraste de Mito vs Realidad genera disparadores de curiosidad y guardados.",
+          callToAction: "Guarda este Reel antes de que lo borre.",
+          suggestedBestTime: "12:00 - 14:00"
+        }
+      ],
+      topicAnalyzed: `Guiones de Video Corto (Reels/TikTok) sobre: "${topicClean}"`,
+      suggestedHashtags: hashtagsList,
+      idealPostingTimes: "18:00 - 22:00 (Mayor tráfico en video vertical)",
+      detectedLangInfo: detectedLanguage
+    };
+  }
+
+  if (contentTypeCategory === 'newsletter') {
+    return {
+      options: [
+        {
+          id: `opt-news-1-${Date.now()}`,
+          headline: "📧 Email Newsletter: Asunto de Alto Open Rate",
+          content: `ASUNTO: La verdad sobre ${topicClean} (y por qué nadie habla de esto)\n\nHola,\n\nEsta semana estuve analizando en profundidad cómo ${topicClean} está cambiando las reglas del juego.\n\nSi solo te llevas una lección hoy, que sea esta:\n"El éxito no proviene de hacer cosas extraordinarias, sino de ejecutar lo básico de forma extraordinaria."\n\n3 Recusos recomendados esta semana:\n- 1. Plantilla de optimización directa.\n- 2. Herramienta de automatización gratuita.\n- 3. Análisis de tendencias del mes.\n\n¿Qué opinas? Responde a este correo y conversamos.\n\nUn abrazo,\nTu equipo.`,
+          formattingType: "email",
+          hashtags: [],
+          emojisCount: 2,
+          viralityScore: 96,
+          viralityReasoning: "Formato personalizable con alta tasa de respuesta e interacción en bandeja de entrada.",
+          callToAction: "Responde a este correo y conversamos.",
+          suggestedBestTime: "08:00 AM (Martes o Jueves)"
+        }
+      ],
+      topicAnalyzed: `Newsletter de Alto Valor sobre: "${topicClean}"`,
+      suggestedHashtags: [],
+      idealPostingTimes: "07:30 - 09:00 AM",
+      detectedLangInfo: detectedLanguage
+    };
+  }
+
+  // Standard Social Post / Thread Default
   return {
     options: [
       {
@@ -42,7 +104,7 @@ export function getClientFallbackViralOptions(body: any): GenerateStatusResponse
       },
       {
         id: `opt-2-${Date.now()}`,
-        headline: "📖 Storytelling & Reflexión Personal",
+        headline: "📖 Storytelling & Hilo de Valor",
         content: `${e4}Durante mucho tiempo pensé que ${topicClean} era algo reservado para unos pocos.\n\nHasta que entendí algo clave:\nLo difícil no es empezar, sino dejar de ponerte excusas.\n\nTres aprendizajes que cambiaron mi perspectiva:\n1. La constancia le gana al talento el 100% de las veces.\n2. Simplificar siempre da mejor resultado que complicarse.\n3. El mejor momento para actuar era ayer; el segundo mejor es HOY.\n\n¿Cuál de estos puntos resonó más contigo?`,
         formattingType: "thread",
         threadParts: [
@@ -71,7 +133,7 @@ export function getClientFallbackViralOptions(body: any): GenerateStatusResponse
       },
       {
         id: `opt-4-${Date.now()}`,
-        headline: "💡 Formato Lista de Valor Práctico",
+        headline: "💡 Formato Diapositiva / Carrusel de Valor",
         content: `${e3}La guía rápida de 3 pasos sobre ${topicClean} que deberías guardar hoy:\n\n1. Paso 01: Elimina lo innecesario antes de optimizar.\n2. Paso 02: Enfócate en el 20% de las acciones que traen el 80% de los resultados.\n3. Paso 03: Mide tus avances semanalmente sin juzgarte.\n\n📌 Guarda esta publicación para volver a ella cuando lo necesites.`,
         formattingType: "carousel",
         hashtags: hashtagsList,
@@ -84,7 +146,8 @@ export function getClientFallbackViralOptions(body: any): GenerateStatusResponse
     ],
     topicAnalyzed: `Optimización viral para: "${topicClean}"`,
     suggestedHashtags: hashtagsList,
-    idealPostingTimes: "18:00 - 21:00 (Mayor retención de audiencia en redes)"
+    idealPostingTimes: "18:00 - 21:00 (Mayor retención de audiencia en redes)",
+    detectedLangInfo: detectedLanguage
   };
 }
 

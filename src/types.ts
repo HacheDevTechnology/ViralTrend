@@ -1,4 +1,27 @@
+export type UserTier = 'basic' | 'premium';
+
+export interface UserAccountInfo {
+  tier: UserTier;
+  email?: string;
+  activatedKey?: string;
+  activatedAt?: string;
+  dailyGenerationsCount: number;
+  lastGenerationDate: string; // YYYY-MM-DD
+  maxDailyBasicLimit: number; // default 3
+  customApiKey?: string;
+  customExtensions?: string[];
+}
+
 export type Platform = 'twitter' | 'instagram' | 'tiktok' | 'linkedin' | 'whatsapp' | 'threads' | 'facebook';
+
+export type ContentTypeCategory = 
+  | 'social_post' 
+  | 'reels_shorts' 
+  | 'carousel' 
+  | 'thread' 
+  | 'newsletter' 
+  | 'podcast_hook' 
+  | 'press_release';
 
 export type Tone = 
   | 'humorous' 
@@ -42,7 +65,7 @@ export interface GeneratedStatusOption {
   id: string;
   headline: string; // Brief label/hook description
   content: string; // Main text
-  formattingType: 'single' | 'thread' | 'carousel' | 'short_hook';
+  formattingType: 'single' | 'thread' | 'carousel' | 'short_hook' | 'script' | 'email';
   threadParts?: string[];
   hashtags: string[];
   emojisCount: number;
@@ -59,6 +82,8 @@ export interface GenerateStatusRequest {
   trendTitle?: string;
   trendContext?: string;
   platform: Platform;
+  contentTypeCategory?: ContentTypeCategory;
+  detectedLanguage?: string;
   tone: Tone;
   regionalStyle?: RegionalStyle;
   audience?: string;
@@ -73,6 +98,7 @@ export interface GenerateStatusResponse {
   topicAnalyzed: string;
   suggestedHashtags: string[];
   idealPostingTimes: string;
+  detectedLangInfo?: string;
 }
 
 export interface ViralityAnalysisRequest {

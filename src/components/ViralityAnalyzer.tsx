@@ -56,10 +56,10 @@ export const ViralityAnalyzer: React.FC<ViralityAnalyzerProps> = ({ onUseImprove
           </div>
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Auditor y Potenciador de Viralidad
+              Evaluemos tu borrador juntos
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
-              Pega cualquier texto o borrador para evaluar su fuerza de gancho, gatillos emocionales y obtener 3 versiones mejoradas de alta conversión.
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
+              Pega tu texto y te mostraré cómo hacerlo más atractivo para captar la atención de tus lectores desde el primer segundo.
             </p>
           </div>
         </div>
